@@ -52,9 +52,10 @@ isomex_experts <- read_excel("data/isomex_experts.xlsx")
 str(isomex_experts)
 
 img_iso<-data.frame(imageURL=isomex_experts$image_url) # create a dataframe with all image URLs
+key = "yourAPIkey"
 fun_plantnet_all_simp<-function(x){identify(key, imageURL=x, no_reject = 'true',
                                             simplify="TRUE")}
-key="2b10lm144MrqodlHNyY60gnwFe"
+
 iso_all<-apply(data.frame(img_iso[,1]), 1, fun_plantnet_all_simp) # loop functions over all image URLs
 
 
@@ -99,7 +100,6 @@ str(imex_first)
 # 3. Merge expert and plantNet dataset ####
 
 # isomex_expert was imported after expert verification of URLs
-# not run: readxls...
 isomex_experts<-isomex_experts %>% 
   rename(sampleID=SampleID)
 imex_joined<-left_join(imex_first, isomex_experts, by="SampleID")

@@ -1,4 +1,4 @@
-# Matches and barplots ####
+# Matches and barplots and species list####
 
 # 0. packages ####
 # library(tidyvers)
@@ -7,6 +7,8 @@ library(viridis)
 
 # 1. Matching species ####
 sm<-imex_region[imex_region$latin_name==imex_region$species_exp,] # matching plant species identifications
+table(sm$species_exp)
+
 
 # create dataframe for plots, score > 0.5
 sm_df <- as.data.frame(sm) %>%
@@ -120,3 +122,32 @@ library(cowplot)
 tiff("./output/panel_matches.tiff", units="px",width = 3200,height = 5000,res = 360)
 plot_grid(p2,p1,p3, nrow=3, labels = c("a", "b", "c"), align = "v")
 dev.off()
+
+# 5. Species list (Supporting table 1)
+sort(unique(imex_region$species_exp))
+
+# this list does not match with the figures as it also takes into accounts scores < 0.5
+speclist<-as.data.frame(imex_region) %>% 
+  select(species_exp, latin_name, continents) %>% 
+  mutate(agreement = ifelse(species_exp==latin_name, 1, 0)) %>% 
+  filter(species_exp!="unidentifiable" & species_exp!="noplant"
+         & species_exp!="noflower" & species_exp!="need_id") %>% 
+  group_by(species_exp, continents) %>% 
+  summarise(matches=sum(agreement)) %>% 
+  arrange(desc(species_exp))
+
+spec_counts<-as.data.frame(imex_region) %>% 
+  select(species_exp, latin_name, continents) %>% 
+  mutate(agreement = ifelse(species_exp==latin_name, 1, 0)) %>% 
+  filter(species_exp!="unidentifiable" & species_exp!="noplant"
+         & species_exp!="noflower" & species_exp!="need_id") %>% 
+  group_by(species_exp, continents) %>% 
+  count(species_exp) %>% 
+  arrange(desc(species_exp))
+
+
+speclist_freq_match<-cbind(speclist, spec_counts[c(1,3)])
+dim(speclist_freq_match)
+
+write.csv2(speclist_freq_match, "./output/species_list.xls")
+dim(speclist_freq_match)

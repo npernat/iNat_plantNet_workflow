@@ -61,6 +61,10 @@ sim_species
 dissim_species<-setdiff(union(imex_joined$species, imex_joined$species_exp), sim_species)
 sort(intersect(dissim_species, imex_joined$species_exp))
 
+sort(unique(imex_joined$latin_name))
+sort(unique(imex_joined$species_exp))
+
+
 # 4. check consistent use of color values given by the experts ####
 table(imex_joined$colour)
 
@@ -76,5 +80,13 @@ imex_joined$colour <- ifelse(imex_joined$colour %in% names(corr_color),
                             corr_color[imex_joined$colour], imex_joined$colour)
 sort(unique(imex_joined$colour)) 
 imex_joined[which(imex_joined$colour=="NA"),]  # NA is other interaction         
+corr_species<-c("no plant"="noplant", "Euonimus japonicus"="Euonymus japonicus",
+              "Muehlerbeckia complexa"="Muehlenbeckia complexa", "Hydranga"="Hydrangea",
+              "green - white"="unidentifiable", "Cirsium arvensae"="Cirsium arvense",
+              "Anaphalis margaritaceae"="Anaphalis margaritacea")
 
+which(imex_joined$species_exp=="green - white")
+imex_joined[18,]
 
+imex_joined$species_exp <- ifelse(imex_joined$species_exp %in% names(corr_species), 
+                             corr_species[imex_joined$species_exp], imex_joined$species_exp)

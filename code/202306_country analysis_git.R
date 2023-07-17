@@ -5,6 +5,8 @@ install.packages("rworldmap")
 install.packages("sf")
 library(rworldmap)
 library(sf)
+library(tidyverse)
+library(viridis)
 
 # 1. Spatial objects and resulting dataframe ####
 imex_points<-data.frame(as.numeric(imex_joined$longitude), 
@@ -46,4 +48,75 @@ plot(st_geometry(imex_region), col=viridis(1, begin=0.4, end=1), pch=1)
 plot(st_geometry(world), add=T)
 
 # 3. beautiful plot for publication ####
-     
+
+# observation map
+tiff("./output/observation_map.tiff", units="px",width = 3000,height = 1000,res = 360)
+ggplot(imex_region, aes(x = longitude,
+                           y = latitude)) +
+  geom_polygon(data=map_data("world"),
+               aes(x = long, y = lat, group = group),
+               fill = "grey95",
+               color = "gray40",
+               size = 0.1) +
+  geom_point(aes(color = continents),size = 0.7, alpha = 0.5) +
+  scale_color_viridis_d(begin=0.1, end=0.6) +
+  coord_fixed(ylim = c(28,60), xlim = c(-122,15))+
+  guides(color="none")+
+  theme_void()
+dev.off()
+
+
+# spread map
+# Create sf object from imex_Europe dataset
+imex_Europe <- st_as_sf(imex_Europe, coords = c("longitude", "latitude"), crs = 4326)
+
+# Generate spatial points for each year
+all_points <- data.frame()
+for (y in years) {
+  points <- imex_Europe[imex_Europe$year <= y, ]
+  points$year <- y
+  all_points <- rbind(all_points, points)
+}
+
+# Convert to sf object
+all_points <- st_as_sf(all_points)
+
+# Create base map
+base_map <- ggplot() +
+  geom_sf(data = st_sf(), fill = "lightgray") +
+  coord_sf()
+
+# Plot spatial points for each year
+
+Europe_cropped<-st_crop(Europe, c(xmin= -10, ymin = 35, xmax = 35, ymax = 60))
+
+plots <- lapply(years, function(y) {
+  points <- all_points[all_points$year == y, ]
+  ggplot() +
+    geom_sf(data = Europe_cropped, fill = "grey90")+
+    geom_sf(data = points, color = viridis(1, begin=0.2), size=0.1, alpha=0.9) +
+    # labs(title = paste(y)) +
+    #theme(plot.title = element_text(hjust = 0.5, size=0.1))+
+    theme_void()
+})
+
+for (i in 1:length(plots)){
+  assign(paste0("p", i), plots[[i]])}
+
+# Display the combined plot
+tiff("./output/spread_map.tiff", units="px",width = 3000,height = 1000,res = 360)
+plot_grid(p6, p7, p8, p9,p10,p11,p12,p13,p14,p15, nrow = 2, labels = c(2012:2021),
+          label_size = 8)
+dev.off()
+# 
+image1<-draw_image("./output/observation_map.tiff")
+image2<-draw_image("./output/spread_map.tiff")
+plot_grid(image1, image2, nrow=2)
+
+
+
+
+
+
+
+
