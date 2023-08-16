@@ -15,7 +15,7 @@ library(tidyverse)
 
 imex %>% 
   count(SampleID) %>% 
-  summarize(mean=mean(n), max=max(n), min=min(n), median=quantile(n,0.5))
+  summarize(median=median(n), max=max(n), min=min(n), median=quantile(n,0.5))
 # a mean of 67 suggestions per image, with the maximum of 164 and a 
 # minimum of 1 (for species not found)
 
