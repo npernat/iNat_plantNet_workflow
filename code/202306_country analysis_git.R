@@ -7,6 +7,7 @@ library(rworldmap)
 library(sf)
 library(tidyverse)
 library(viridis)
+library(cowplot)
 
 # 1. Spatial objects and resulting dataframe ####
 imex_points<-data.frame(as.numeric(imex_joined$longitude), 
@@ -58,7 +59,7 @@ ggplot(imex_region, aes(x = longitude,
                fill = "grey95",
                color = "gray40",
                size = 0.1) +
-  geom_point(aes(color = continents),size = 0.7, alpha = 0.5) +
+  geom_point(aes(color = continents),size = 0.7, alpha = 0.5) + # size = 0.7
   scale_color_viridis_d(begin=0.1, end=0.6) +
   coord_fixed(ylim = c(28,60), xlim = c(-122,15))+
   guides(color="none")+
@@ -94,7 +95,7 @@ plots <- lapply(years, function(y) {
   points <- all_points[all_points$year == y, ]
   ggplot() +
     geom_sf(data = Europe_cropped, fill = "grey90")+
-    geom_sf(data = points, color = viridis(1, begin=0.2), size=0.1, alpha=0.9) +
+    geom_sf(data = points, color = viridis(1, begin=0.2), size=1.5, alpha=0.7) +
     # labs(title = paste(y)) +
     #theme(plot.title = element_text(hjust = 0.5, size=0.1))+
     theme_void()
@@ -109,9 +110,6 @@ plot_grid(p6, p7, p8, p9,p10,p11,p12,p13,p14,p15, nrow = 2, labels = c(2012:2021
           label_size = 8)
 dev.off()
 # 
-image1<-draw_image("./output/observation_map.tiff")
-image2<-draw_image("./output/spread_map.tiff")
-plot_grid(image1, image2, nrow=2)
 
 
 
