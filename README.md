@@ -19,7 +19,7 @@ To facilitate testing and reproducing results without retrieving observations fr
 
 To access the PlantNet API via the `PlantNet` package, you need an API key, which you can obtain at [PlantNet Usage](https://my.PlantNet.org/usage). Without a key, it is not possible to run the code. We also adapted the `identify()` command to loop over all image URLs. The result is a list of lists that needs to be converted into a dataframe. At this step, it is advisable to write the dataframe as a backup.
 
- 
+ You also may experience trouble in installing the `plantnet package` via devtools. We solved the problems via re-installing the packages `devtools` and `R.Utils`.
  
 ##### Step 3: Preparing the data
 
