@@ -7,14 +7,14 @@ Nadja Pernat, 2024-06-06
 This very brief step-by-step manual explains how to use the automatic data exchange workflow between iNaturalist and PlantNet. When using this workflow with *Isodontia mexicana*, results may vary slightly due to changes on iNaturalist. Observations made within the investigated time period might have been added, removed, had their license changed, or lost their research-grade status. Note that Pl@ntNet may also perform differently over time as its algorithm is continuously trained with new images, potentially resulting in different species suggestions or scores. To reproduce our results, we also provided our data as excel sheets.
 
 
-##### Step 1: Running the adapted `get_rinat_obs()`
+##### Step 1: Running the adapted `get_inat_obs()`
 
-The original `get_rinat_obs()` command retrieves observations for only one year. We adapted the function slightly so that it can loop over multiple years without stopping. Please run this code first ("get_inat_obs_nostop").
+The original `get_inat_obs()` command retrieves observations for only one year. We adapted the function slightly so that it can loop over multiple years without stopping. Please run this code first ("get_inat_obs_nostop").
 
 
 ##### Step 2: iNaturalist-PlantNet data exchange workflow  
 
-Run the `get_rinat_obs_nostop()` function with *Isodontia mexicana* or any other `taxon_name` from the data preparation script. The looping over years creates a list that needs to be converted into a dataframe. You can also select the variables you want to keep.
+Run the `get_inat_obs_nostop()` function with *Isodontia mexicana* or any other `taxon_name` from the data preparation script. The looping over years creates a list that needs to be converted into a dataframe. You can also select the variables you want to keep.
 To facilitate testing and reproducing results without retrieving observations from iNaturalist again, we have provided our data table after downloading the image URLs ("isomex_experts.xlsx" - we called it experts, because it was also used by the experts to identify the plant species on the given images). 
 
 To access the Pl@ntNet API via the `plantnet` package, you need an API key, which you can obtain at [Pl@ntNet](https://my.plantnet.org/). Without a key, it is not possible to run the code. We also adapted the `identify()` command to loop over all image URLs. The result is a list of lists that needs to be converted into a dataframe. At this step, it is advisable to write the dataframe as a backup.
